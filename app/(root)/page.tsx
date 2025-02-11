@@ -1,9 +1,8 @@
-import React from 'react'
 
-const HomePahe = () => {
+const HomePage = () => {
   return (
     <div>Prostore</div>
   )
 }
 
-export default HomePahe
+export default HomePage
