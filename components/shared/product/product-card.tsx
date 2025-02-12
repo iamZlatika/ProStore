@@ -6,6 +6,7 @@ import ProductPrice from "./product-price";
 interface ProductCardProps {
     product: any
 }
+
 const ProductCard = ({ product }: ProductCardProps) => {
     return (
         <Card className="w-full max-w-sm">
