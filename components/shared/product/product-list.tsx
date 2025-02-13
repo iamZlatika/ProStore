@@ -1,7 +1,8 @@
+import { TProduct } from "@/types"
 import ProductCard from "./product-card"
 
 interface ProductListProps {
-    data: any,
+    data: TProduct[],
     title: string,
 }
 const ProductList = ({ data, title }: ProductListProps) => {
@@ -12,7 +13,7 @@ const ProductList = ({ data, title }: ProductListProps) => {
             </h2>
             {data.length > 0 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {data.map((product: any) => (
+                    {data.map((product: TProduct) => (
                         <ProductCard key={product.slug} product={product} />
                     ))}
                 </div>

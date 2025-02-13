@@ -2,9 +2,10 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import Link from "next/link"
 import Image from 'next/image';
 import ProductPrice from "./product-price";
+import { TProduct } from "@/types";
 
 interface ProductCardProps {
-    product: any
+    product: TProduct
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
