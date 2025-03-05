@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 const SignInPage = async (props: { searchParams: Promise<{ callbackUrl: string }> }) => {
 
     const { callbackUrl } = (await props.searchParams)
-
+    console.log(callbackUrl, 111)
     const session = await auth();
     if (session) {
         return redirect(callbackUrl || '/');
