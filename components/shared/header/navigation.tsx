@@ -1,21 +1,20 @@
 import ModeToggle from "./mode-toggle"
-import { ShoppingCart, UserIcon } from "lucide-react"
+import { ShoppingCart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import UserButton from "./user-button"
 
 const Navigation = () => {
     return (
-        <> <ModeToggle />
+        <>
+            <ModeToggle />
             <Button asChild variant='ghost'>
                 <Link href='/cart'>
                     <ShoppingCart /> Cart
                 </Link>
             </Button>
-            <Button asChild>
-                <Link href='/sign-in'>
-                    <UserIcon /> Sign In
-                </Link>
-            </Button></>
+            <UserButton />
+        </>
     )
 }
 
