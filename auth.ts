@@ -7,6 +7,8 @@ import type { NextAuthConfig } from "next-auth";
 import type { Session } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import type { AdapterUser } from "next-auth/adapters";
+// import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
 type TSession = {
   session: Session;
@@ -70,7 +72,6 @@ export const config = {
       session.user.role = token.role;
       session.user.name = token.name;
 
-      console.log(token, 123);
       if (trigger === "update") {
         session.user.name = user.name;
       }
@@ -90,6 +91,21 @@ export const config = {
         }
       }
       return token;
+    },
+    authorized({ request }: { request: NextRequest }) {
+      if (!request.cookies.get("sessionCartId")) {
+        const sessionCartId = crypto.randomUUID();
+        const newRequestHeaders = new Headers(request.headers);
+        const response = NextResponse.next({
+          request: {
+            headers: newRequestHeaders,
+          },
+        });
+        response.cookies.set("sessionCartId", sessionCartId);
+        return response;
+      } else {
+        return true;
+      }
     },
   },
 } satisfies NextAuthConfig;

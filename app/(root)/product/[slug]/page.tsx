@@ -2,10 +2,11 @@
 import { getProductBySlug } from "@/lib/actions/product.actions"
 import { notFound } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import ProductPrice from "@/components/shared/product/product-price"
 import ProductImages from "@/components/shared/product/product-images"
+import AddToCart from "@/components/shared/product/add-cart"
+// import { getMyCart } from "@/lib/actions/cart.actions"
 
 interface ProductDetailsPageProps {
     params: Promise<{ slug: string }>
@@ -15,6 +16,17 @@ const ProductDetailsPage = async ({ params }: ProductDetailsPageProps) => {
 
     const product = await getProductBySlug(slug)
     if (!product) notFound()
+
+        // const myCart = await getMyCart()
+
+    const productItem = {
+        productId: product.id,
+        name: product.name,
+        slug: product.slug,
+        price: product.price,
+        quantity: 1,
+        image: product.images![0]
+    }
 
     return (
         <>
@@ -51,7 +63,7 @@ const ProductDetailsPage = async ({ params }: ProductDetailsPageProps) => {
                                 </div>
                                 {product.stock > 0 && (
                                     <div className="flex-center">
-                                        <Button className="w-full">Add To Cart</Button>
+                                        <AddToCart item={productItem} />
                                     </div>
                                 )}
                             </CardContent>
