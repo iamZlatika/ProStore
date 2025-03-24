@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import ProductPrice from "@/components/shared/product/product-price"
 import ProductImages from "@/components/shared/product/product-images"
 import AddToCart from "@/components/shared/product/add-cart"
-// import { getMyCart } from "@/lib/actions/cart.actions"
+import { getMyCart } from "@/lib/actions/cart.actions"
 
 interface ProductDetailsPageProps {
     params: Promise<{ slug: string }>
@@ -17,7 +17,7 @@ const ProductDetailsPage = async ({ params }: ProductDetailsPageProps) => {
     const product = await getProductBySlug(slug)
     if (!product) notFound()
 
-        // const myCart = await getMyCart()
+    const myCart = await getMyCart()
 
     const productItem = {
         productId: product.id,
@@ -63,7 +63,10 @@ const ProductDetailsPage = async ({ params }: ProductDetailsPageProps) => {
                                 </div>
                                 {product.stock > 0 && (
                                     <div className="flex-center">
-                                        <AddToCart item={productItem} />
+                                        <AddToCart
+                                            item={productItem}
+                                            cart={myCart}
+                                        />
                                     </div>
                                 )}
                             </CardContent>

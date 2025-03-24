@@ -24,6 +24,7 @@ const calcPrice = (items: TCartItem[]) => {
     totalPrice: totalPrice.toFixed(2),
   };
 };
+
 export async function addItemToCart(data: TCartItem) {
   try {
     const sessionCartId = (await cookies()).get("sessionCartId")?.value;
