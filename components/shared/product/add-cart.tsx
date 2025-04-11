@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { Plus, Minus, Loader } from "lucide-react";
 import { toast } from "sonner";
 import { removeItemFromCart, addItemToCart } from "@/lib/actions/cart.actions";
-import { useState } from "react";
+import { useTransition } from "react";
 
 interface AddToCartProps {
     item: TCartItem;
@@ -15,40 +15,41 @@ interface AddToCartProps {
 
 const AddToCart = ({ item, cart }: AddToCartProps) => {
     const router = useRouter();
-    const [isLoading, setIsLoading] = useState(false);
+    const [isPending, startTransition] = useTransition();
+
     const handleAddToCart = async () => {
-        setIsLoading(true);
-        const res = await addItemToCart(item);
-        setIsLoading(false);
+        startTransition(async () => {
+            const res = await addItemToCart(item);
 
-        if (!res.success) {
-            toast.error(res.message);
-            return;
-        }
+            if (!res.success) {
+                toast.error(res.message);
+                return;
+            }
 
-        toast(res.message, {
-            action: {
-                label: "Go To Cart",
-                onClick: () => router.push("/cart"),
-            },
+            toast(res.message, {
+                action: {
+                    label: "Go To Cart",
+                    onClick: () => router.push("/cart"),
+                },
+            });
         });
     };
 
     const handleRemoveFromCart = async () => {
-        setIsLoading(true);
-        const res = await removeItemFromCart(item.productId);
-        setIsLoading(false);
+        startTransition(async () => {
+            const res = await removeItemFromCart(item.productId);
 
-        if (!res.success) {
-            toast.error(res.message);
-            return;
-        }
+            if (!res.success) {
+                toast.error(res.message);
+                return;
+            }
 
-        toast(res.message, {
-            action: {
-                label: "Go To Cart",
-                onClick: () => router.push("/cart"),
-            },
+            toast(res.message, {
+                action: {
+                    label: "Go To Cart",
+                    onClick: () => router.push("/cart"),
+                },
+            });
         });
     };
 
@@ -57,16 +58,16 @@ const AddToCart = ({ item, cart }: AddToCartProps) => {
 
     return foundCartItem ? (
         <div>
-            <Button type="button" variant="outline" onClick={handleRemoveFromCart} disabled={isLoading}>
-                {isLoading ? (
+            <Button type="button" variant="outline" onClick={handleRemoveFromCart} disabled={isPending}>
+                {isPending ? (
                     <Loader className="w-4 h-4 animate-spin" />
                 ) : (
                     <Minus className="w-4 h-4" />
                 )}
             </Button>
             <span className="px-2">{foundCartItem.quantity}</span>
-            <Button type="button" variant="outline" onClick={handleAddToCart} disabled={isLoading}>
-                {isLoading ? (
+            <Button type="button" variant="outline" onClick={handleAddToCart} disabled={isPending}>
+                {isPending ? (
                     <Loader className="w-4 h-4 animate-spin" />
                 ) : (
                     <Plus className="w-4 h-4" />
@@ -74,8 +75,8 @@ const AddToCart = ({ item, cart }: AddToCartProps) => {
             </Button>
         </div>
     ) : (
-        <Button className="w-full" type="button" onClick={handleAddToCart} disabled={isLoading}>
-            {isLoading ? (
+        <Button className="w-full" type="button" onClick={handleAddToCart} disabled={isPending}>
+            {isPending ? (
                 <Loader className="w-4 h-4 animate-spin" />
             ) : (
                 <Plus className="w-4 h-4" />
