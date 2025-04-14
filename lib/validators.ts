@@ -22,14 +22,14 @@ export const insertProductSchema = z.object({
 });
 
 export const signInFormSchema = z.object({
-  email: z.string().email("Invalid email adress"),
+  email: z.string().email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 export const signUpFormSchema = z
   .object({
     name: z.string().min(3, "Name must be at least 3 characters"),
-    email: z.string().email("Invalid email adress"),
+    email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z
       .string()
@@ -57,4 +57,16 @@ export const insertCartSchema = z.object({
   taxPrice: currency,
   sessionCartId: z.string().min(1, "Session cart ID si reqiered"),
   userId: z.string().optional().nullable(),
+});
+
+export const shippingAddressSchema = z.object({
+  fullName: z.string().min(3, "Name must be at least three characters"),
+  streetAddress: z.string().min(3, "Address must be at least three characters"),
+  city: z.string().min(3, "city must be at least three characters"),
+  postalCode: z
+    .string()
+    .min(3, "Postal code must be at least three characters"),
+  country: z.string().min(3, "Country must be at least three characters"),
+  lat: z.number().optional(),
+  lng: z.number().optional(),
 });
