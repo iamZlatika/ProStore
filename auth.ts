@@ -7,7 +7,6 @@ import type { NextAuthConfig } from "next-auth";
 import type { Session } from "next-auth";
 import type { JWT } from "next-auth/jwt";
 import type { AdapterUser } from "next-auth/adapters";
-// import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { calcPrice } from "./lib/utils";
@@ -164,7 +163,29 @@ export const config = {
 
       return token;
     },
-    authorized({ request }: { request: NextRequest }) {
+    authorized({
+      request,
+      auth,
+    }: {
+      request: NextRequest;
+      auth: Session | null;
+    }) {
+      const protectedPaths = [
+        /\/shipping-address/,
+        /\/payment-method/,
+        /\/place-order/,
+        /\/profile/,
+        /\/order\/(.*)/,
+        /\/user\/(.*)/,
+        /\/admin/,
+      ];
+
+      const { pathname } = request.nextUrl;
+      if (!auth && protectedPaths.some((path) => path.test(pathname))) {
+        console.log(11212);
+        return false;
+      }
+
       if (!request.cookies.get("sessionCartId")) {
         const sessionCartId = crypto.randomUUID();
         const newRequestHeaders = new Headers(request.headers);
@@ -174,6 +195,7 @@ export const config = {
           },
         });
         response.cookies.set("sessionCartId", sessionCartId);
+
         return response;
       } else {
         return true;
