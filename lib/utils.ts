@@ -1,3 +1,4 @@
+import { TCartItem } from "@/types";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -40,7 +41,7 @@ export function formatError(error: any) {
   }
 }
 
-export function roundTwo(value: number | string) {
+function roundTwo(value: number | string) {
   if (typeof value === "number") {
     return Math.round((value + Number.EPSILON) * 100) / 100;
   } else if (typeof value === "string") {
@@ -50,19 +51,34 @@ export function roundTwo(value: number | string) {
   }
 }
 
-
-const CURRENCY_FORMATTER = new Intl.NumberFormat('en-US', {
-  currency: 'USD',
-  style: 'currency',
+const CURRENCY_FORMATTER = new Intl.NumberFormat("en-US", {
+  currency: "USD",
+  style: "currency",
   minimumFractionDigits: 2,
 });
 
 export function formatCurrency(amount: number | string | null) {
-  if (typeof amount === 'number') {
+  if (typeof amount === "number") {
     return CURRENCY_FORMATTER.format(amount);
-  } else if (typeof amount === 'string') {
+  } else if (typeof amount === "string") {
     return CURRENCY_FORMATTER.format(Number(amount));
   } else {
-    return 'NaN';
+    return "NaN";
   }
 }
+
+export const calcPrice = (items: TCartItem[]) => {
+  const itemsPrice = roundTwo(
+      items.reduce((acc, item) => acc + Number(item.price) * item.quantity, 0)
+    ),
+    shippingPrice = roundTwo(itemsPrice > 100 ? 0 : 10),
+    taxPrice = roundTwo(0.15 * itemsPrice),
+    totalPrice = roundTwo(itemsPrice + taxPrice + shippingPrice);
+
+  return {
+    itemsPrice: itemsPrice.toFixed(2),
+    shippingPrice: shippingPrice.toFixed(2),
+    taxPrice: taxPrice.toFixed(2),
+    totalPrice: totalPrice.toFixed(2),
+  };
+};

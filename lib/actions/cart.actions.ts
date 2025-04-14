@@ -2,28 +2,13 @@
 
 import { TCartItem } from "@/types";
 import { cookies } from "next/headers";
-import { convertToPlainObject, formatError, roundTwo } from "../utils";
+import { calcPrice, convertToPlainObject, formatError, } from "../utils";
 import { auth } from "@/auth";
 import { prisma } from "@/db/prisma";
 import { cartItemSchema, insertCartSchema } from "../validators";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 
-const calcPrice = (items: TCartItem[]) => {
-  const itemsPrice = roundTwo(
-      items.reduce((acc, item) => acc + Number(item.price) * item.quantity, 0)
-    ),
-    shippingPrice = roundTwo(itemsPrice > 100 ? 0 : 10),
-    taxPrice = roundTwo(0.15 * itemsPrice),
-    totalPrice = roundTwo(itemsPrice + taxPrice + shippingPrice);
-
-  return {
-    itemsPrice: itemsPrice.toFixed(2),
-    shippingPrice: shippingPrice.toFixed(2),
-    taxPrice: taxPrice.toFixed(2),
-    totalPrice: totalPrice.toFixed(2),
-  };
-};
 
 export async function addItemToCart(data: TCartItem) {
   try {

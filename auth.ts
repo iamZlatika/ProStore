@@ -9,6 +9,9 @@ import type { JWT } from "next-auth/jwt";
 import type { AdapterUser } from "next-auth/adapters";
 // import { cookies } from "next/headers";
 import { NextRequest, NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { calcPrice } from "./lib/utils";
+import { TCartItem } from "./types";
 
 type TSession = {
   session: Session;
@@ -78,8 +81,9 @@ export const config = {
 
       return session;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
+        token.id = user.id;
         token.role = user.role;
         if (user.name === "NO_NAME") {
           token.name = user.email!.split("@")[0];
@@ -90,6 +94,74 @@ export const config = {
           });
         }
       }
+      if (trigger === "signIn" || trigger === "signUp") {
+        const cookiesObject = await cookies();
+        const sessionCartId = cookiesObject.get("sessionCartId")?.value;
+
+        if (sessionCartId) {
+          const guestCart = await prisma.cart.findFirst({
+            where: { sessionCartId },
+          });
+
+          const userCart = await prisma.cart.findFirst({
+            where: { userId: user.id },
+          });
+
+          if (guestCart) {
+            const guestItems = guestCart.items as TCartItem[];
+            if (userCart) {
+              const userItems = userCart.items as TCartItem[];
+
+              const mergedMap = new Map<string, TCartItem>();
+
+              userItems.forEach((item) => {
+                mergedMap.set(item.productId, { ...item });
+              });
+
+              guestItems.forEach((item) => {
+                if (mergedMap.has(item.productId)) {
+                  const existing = mergedMap.get(item.productId)!;
+                  mergedMap.set(item.productId, {
+                    ...existing,
+                    quantity: existing.quantity + item.quantity,
+                    price: existing.price + item.price,
+                  });
+                } else {
+                  mergedMap.set(item.productId, { ...item });
+                }
+              });
+
+              const mergedItems = Array.from(mergedMap.values());
+
+              const { itemsPrice, totalPrice, shippingPrice, taxPrice } =
+                calcPrice(mergedItems);
+
+              await prisma.cart.update({
+                where: { id: userCart.id },
+                data: {
+                  items: mergedItems,
+                  itemsPrice,
+                  totalPrice,
+                  shippingPrice,
+                  taxPrice,
+                },
+              });
+
+              await prisma.cart.delete({
+                where: { id: guestCart.id },
+              });
+            } else {
+              await prisma.cart.update({
+                where: { id: guestCart.id },
+                data: {
+                  userId: user.id,
+                },
+              });
+            }
+          }
+        }
+      }
+
       return token;
     },
     authorized({ request }: { request: NextRequest }) {
