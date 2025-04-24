@@ -5,6 +5,7 @@ import {
   insertOrderSchema,
   insertProductSchema,
   paymentMethodSchema,
+  paymentResultSchema,
   shippingAddressSchema,
 } from "@/lib/validators";
 import { z } from "zod";
@@ -32,3 +33,15 @@ export type TInsertOrder = z.infer<typeof insertOrderSchema> & {
   user: { name: string; email: string };
   // paymentResult: PaymentResult;
 };
+
+export type TPayPalOrderResponse = {
+  id: string;
+  status: string;
+  links: {
+    href: string;
+    rel: string;
+    method: string;
+  }[];
+};
+
+export type TPaymentResult = z.infer<typeof paymentResultSchema>;
