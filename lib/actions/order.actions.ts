@@ -152,7 +152,7 @@ export async function approvePayPalOrder(
     if (
       !captureData ||
       captureData.id !== (order.paymentResult as TPaymentResult)?.id ||
-      captureData.status !== "COPMLETED"
+      captureData.status !== "COMPLETED"
     ) {
       throw new Error("Error in PayPal payment");
     }
@@ -161,7 +161,7 @@ export async function approvePayPalOrder(
       paymentResult: {
         id: captureData.id,
         status: captureData.status,
-        email_address: captureData.payer.email,
+        email_address: captureData.payer.email_address,
         pricePaid:
           captureData.purchase_units[0]?.payments?.captures[0]?.amount?.value,
       },
