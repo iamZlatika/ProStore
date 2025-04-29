@@ -7,6 +7,7 @@ import {
   paymentMethodSchema,
   paymentResultSchema,
   shippingAddressSchema,
+  updateProfileSchema,
 } from "@/lib/validators";
 import { z } from "zod";
 
@@ -45,3 +46,4 @@ export type TPayPalOrderResponse = {
 };
 
 export type TPaymentResult = z.infer<typeof paymentResultSchema>;
+export type TUpdateUser = z.infer<typeof updateProfileSchema>;
