@@ -15,6 +15,7 @@ import { updateProfileSchema } from '@/lib/validators';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { useRouter } from 'next/navigation';
 
 interface ProfileFormProps {
     name: string,
@@ -22,6 +23,7 @@ interface ProfileFormProps {
 }
 
 const ProfileForm = ({ name, email }: ProfileFormProps) => {
+    const router = useRouter()
     const form = useForm<z.infer<typeof updateProfileSchema>>({
         resolver: zodResolver(updateProfileSchema),
         defaultValues: {
@@ -37,6 +39,7 @@ const ProfileForm = ({ name, email }: ProfileFormProps) => {
             return toast.error(res.message);
         }
         toast(res.message);
+        router.refresh();
     };
 
     return (
