@@ -47,3 +47,9 @@ export type TPayPalOrderResponse = {
 
 export type TPaymentResult = z.infer<typeof paymentResultSchema>;
 export type TUpdateUser = z.infer<typeof updateProfileSchema>;
+
+export type TSalesData = {
+  month: string;
+  totalSales: number;
+};
+
