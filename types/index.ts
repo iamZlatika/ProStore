@@ -53,3 +53,7 @@ export type TSalesData = {
   totalSales: number;
 };
 
+export type TOrdersRequest = {
+  limit?: number;
+  page: number;
+}

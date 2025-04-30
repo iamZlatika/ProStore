@@ -7,7 +7,7 @@ import { getMyCart } from "./cart.actions";
 import { getUserbyId } from "./user.actions";
 import { insertOrderSchema } from "../validators";
 import { prisma } from "@/db/prisma";
-import { TCartItem, TPaymentResult, TSalesData } from "@/types";
+import { TCartItem, TOrdersRequest, TPaymentResult, TSalesData } from "@/types";
 import { paypal } from "../paypal";
 import { revalidatePath } from "next/cache";
 import { PAGE_SIZE } from "../constants";
@@ -227,13 +227,7 @@ async function updateOrderToPaid({
   if (!updatedOrder) throw new Error("Order not found");
 }
 
-export async function getMyOrders({
-  limit = PAGE_SIZE,
-  page,
-}: {
-  limit?: number;
-  page: number;
-}) {
+export async function getMyOrders({ limit = PAGE_SIZE, page }: TOrdersRequest) {
   const session = await auth();
 
   if (!session) throw new Error("User is not authorized");
@@ -288,4 +282,35 @@ export async function getOrderSummary() {
     salesData,
     latestSales,
   };
+}
+
+export async function getAllOrders({
+  limit = PAGE_SIZE,
+  page,
+}: TOrdersRequest) {
+  const data = await prisma.order.findMany({
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    skip: (page - 1) * limit,
+    include: { user: { select: { name: true } } },
+  });
+
+  const dataCount = await prisma.order.count();
+
+  return {
+    data,
+    totalPages: Math.ceil(dataCount / limit),
+  };
+}
+
+export async function deleteOrder(id: string) {
+  try {
+    await prisma.order.delete({
+      where: { id },
+    });
+    revalidatePath("/admin/orders");
+    return { success: true, message: "Order deleted successfuly" };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
 }
