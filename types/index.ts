@@ -56,4 +56,11 @@ export type TSalesData = {
 export type TOrdersRequest = {
   limit?: number;
   page: number;
-}
+};
+
+export type TProductsRequest = {
+  query: string;
+  limit?: number;
+  page: number;
+  category: string;
+};
