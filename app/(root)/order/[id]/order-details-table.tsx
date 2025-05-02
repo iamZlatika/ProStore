@@ -16,15 +16,17 @@ import {
 import {
     createPayPalOrder,
     approvePayPalOrder,
-    // updateOrderToPaidCOD,
-    // deliverOrder,
+    updateOrderToPaidCOD,
+    updateOrderToDelivered
 } from '@/lib/actions/order.actions';
+import AdminButton from "./admin-button";
 
 interface OrderDetailsTableProps {
     order: TInsertOrder,
-    paypalClientId: string
+    paypalClientId: string,
+    isAdmin: boolean
 }
-const OrderDetailsTable = ({ order, paypalClientId }: OrderDetailsTableProps) => {
+const OrderDetailsTable = ({ order, paypalClientId, isAdmin }: OrderDetailsTableProps) => {
     const {
         id,
         shippingAddress,
@@ -66,13 +68,9 @@ const OrderDetailsTable = ({ order, paypalClientId }: OrderDetailsTableProps) =>
 
     const handleApprovePayPalOrder = async (data: { orderID: string }) => {
         const res = await approvePayPalOrder(order.id, data)
-
-        if (!res.success) {
-            toast.error(res.message);
-        } else {
-            toast(res.message)
-        }
-
+        
+        const showToast = res.success ? toast : toast.error;
+        showToast(res.message);
     }
 
     return (
@@ -176,6 +174,12 @@ const OrderDetailsTable = ({ order, paypalClientId }: OrderDetailsTableProps) =>
                                         />
                                     </PayPalScriptProvider>
                                 </div>
+                            )}
+                            {isAdmin && !isPaid && paymentMethod === 'CashOnDelivery' && (
+                                <AdminButton title="Mark as Paid" updateAction={updateOrderToPaidCOD} orderId={order.id} />
+                            )}
+                            {isAdmin && isPaid && !isDelivered && (
+                                <AdminButton title="Mark as Delivered" updateAction={updateOrderToDelivered} orderId={order.id} />
                             )}
                         </CardContent>
                     </Card>

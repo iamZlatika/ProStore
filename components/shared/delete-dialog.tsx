@@ -25,14 +25,7 @@ const DeleteDialog = ({ id, action }: DeleteDialogProps) => {
     const handleDeleteClick = () => {
         startTransition(async () => {
             const result = await action(id)
-            if (!result.success) {
-                toast.error(result.message);
-                return;
-            } else {
-                setOpen(false);
-                toast(result.message);
-            }
-
+            toast[result.success ? 'success' : 'error'](result.message);
         })
 
     }
