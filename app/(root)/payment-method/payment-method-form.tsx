@@ -1,103 +1,103 @@
-'use client'
+'use client';
 
-import { useRouter } from "next/navigation"
-import { toast } from "sonner";
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 import { useTransition } from 'react';
 import { paymentMethodSchema } from '@/lib/validators';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DEFAULT_PAYMENT_METHOD, PAYMENT_METHODS } from '@/lib/constants';
 import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, Loader } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { updateUserPaymentMethod } from '@/lib/actions/user.actions';
-import { TPaymentMethod } from "@/types";
-
+import type { TPaymentMethod } from '@/types';
 
 interface PaymentMethodFormProps {
-    preferredPaymentMethod: string | null
+  preferredPaymentMethod: string | null;
 }
 
 const PaymentMethodForm = ({ preferredPaymentMethod }: PaymentMethodFormProps) => {
-    const router = useRouter()
+  const router = useRouter();
 
-    const form = useForm<TPaymentMethod>({
-        resolver: zodResolver(paymentMethodSchema),
-        defaultValues: {
-            type: preferredPaymentMethod || DEFAULT_PAYMENT_METHOD
-        }
-    })
+  const form = useForm<TPaymentMethod>({
+    resolver: zodResolver(paymentMethodSchema),
+    defaultValues: {
+      type: preferredPaymentMethod || DEFAULT_PAYMENT_METHOD,
+    },
+  });
 
-    const [isPending, startTransition] = useTransition()
+  const [isPending, startTransition] = useTransition();
 
-    const onSubmit = async (values: TPaymentMethod) => {
-        startTransition(async () => {
-            const result = await updateUserPaymentMethod(values)
+  const onSubmit = (values: TPaymentMethod) => {
+    startTransition(async () => {
+      const result = await updateUserPaymentMethod(values);
 
-            if (!result.success) {
-                toast.error(result.message);
-                return;
-            }
+      if (!result.success) {
+        toast.error(result.message);
+        return;
+      }
 
-            router.push('/place-order')
-        })
-    }
-    return (
-        <div className="max-w-md mx-auto space-y-4">
-            <h1 className="h2-bold mt-4">Payment Method</h1>
-            <p className="text-small text-muted-foreground">
-                Please select a payment method
-            </p>
-            <Form {...form}>
-                <form
-                    method="post"
-                    className="space-y-4"
-                    onSubmit={form.handleSubmit(onSubmit)}>
-                    <div className="flex flex-col md:flex-row gap-5">
-                        <FormField
-                            control={form.control}
-                            name="type"
-                            render={({ field }) => (
-                                <FormItem className="space-y-3">
-                                    <FormControl>
-                                        <RadioGroup
-                                            onValueChange={field.onChange}
-                                            className="flex flex-col space-y-2"
-                                        >
-                                            {PAYMENT_METHODS.map((paymentMethod) => (<FormItem key={paymentMethod} className="flex items-center space-x-3 space-y-0">
-                                                <FormControl>
-                                                    <RadioGroupItem value={paymentMethod} checked={field.value === paymentMethod} />
-                                                </FormControl>
-                                                <FormLabel>{paymentMethod}</FormLabel>
-                                            </FormItem>))}
-                                        </RadioGroup>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
+      router.push('/place-order');
+    });
+  };
+  return (
+    <div className="max-w-md mx-auto space-y-4">
+      <h1 className="h2-bold mt-4">Payment Method</h1>
+      <p className="text-small text-muted-foreground">Please select a payment method</p>
+      <Form {...form}>
+        <form method="post" className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="flex flex-col md:flex-row gap-5">
+            <FormField
+              control={form.control}
+              name="type"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormControl>
+                    <RadioGroup onValueChange={field.onChange} className="flex flex-col space-y-2">
+                      {PAYMENT_METHODS.map((paymentMethod) => (
+                        <FormItem
+                          key={paymentMethod}
+                          className="flex items-center space-x-3 space-y-0"
                         >
+                          <FormControl>
+                            <RadioGroupItem
+                              value={paymentMethod}
+                              checked={field.value === paymentMethod}
+                            />
+                          </FormControl>
+                          <FormLabel>{paymentMethod}</FormLabel>
+                        </FormItem>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            ></FormField>
+          </div>
+          <div className="flex gap-2">
+            <Button type="submit" disabled={isPending}>
+              {isPending ? (
+                <Loader className="w-4 h-4 animate-spin" />
+              ) : (
+                <ArrowRight className="w-4 h-4" />
+              )}{' '}
+              Continue
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
+};
 
-                        </FormField>
-                    </div>
-                    <div className="flex gap-2">
-                        <Button
-                            type='submit'
-                            disabled={isPending}>
-                            {isPending ? (<Loader className="w-4 h-4 animate-spin" />) : (<ArrowRight className="w-4 h-4" />)}{' '}Continue
-                        </Button>
-                    </div>
-                </form>
-            </Form>
-        </div>
-    )
-}
-
-export default PaymentMethodForm
+export default PaymentMethodForm;
