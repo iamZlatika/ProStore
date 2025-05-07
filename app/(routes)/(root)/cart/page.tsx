@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import CartTable from '../../../components/shared/cart/cart-table';
+import CartTable from '@/components/shared/cart/cart-table';
 import { getMyCart } from '@/lib/actions/cart.actions';
 
 export const metadata: Metadata = {
@@ -9,11 +9,7 @@ export const metadata: Metadata = {
 const CartPage = async () => {
   const cart = await getMyCart();
 
-  return (
-    <>
-      <CartTable cart={cart} />
-    </>
-  );
+  return <CartTable cart={cart} />;
 };
 
 export default CartPage;

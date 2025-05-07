@@ -173,7 +173,6 @@ export const config = {
 
       const { pathname } = request.nextUrl;
       if (!auth && protectedPaths.some((path) => path.test(pathname))) {
-        console.log(11212);
         return false;
       }
 
