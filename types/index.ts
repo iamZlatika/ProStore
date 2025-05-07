@@ -7,6 +7,7 @@ import type {
   paymentMethodSchema,
   paymentResultSchema,
   shippingAddressSchema,
+  updateProductSchema,
   updateProfileSchema,
 } from '@/lib/validators';
 import type { z } from 'zod';
@@ -17,7 +18,8 @@ export type TProduct = z.infer<typeof insertProductSchema> & {
   numReviews: number;
   createdAt: Date;
 };
-
+export type TUpdateProduct = z.infer<typeof updateProductSchema>;
+export type TInsertProduct = z.infer<typeof insertProductSchema>;
 export type TCart = z.infer<typeof insertCartSchema>;
 export type TCartItem = z.infer<typeof cartItemSchema>;
 export type TShippingAddress = z.infer<typeof shippingAddressSchema>;
