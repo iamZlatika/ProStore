@@ -7,7 +7,7 @@ import { getMyCart } from './cart.actions';
 import { getUserbyId } from './user.actions';
 import { insertOrderSchema } from '../validators';
 import { prisma } from '@/db/prisma';
-import type { TCartItem, TOrdersRequest, TPaymentResult, TSalesData } from '@/types';
+import type { TCartItem, TAllItemsRequest, TPaymentResult, TSalesData } from '@/types';
 import { paypal } from '../paypal';
 import { revalidatePath } from 'next/cache';
 import { PAGE_SIZE } from '../constants';
@@ -223,7 +223,7 @@ async function updateOrderToPaid({
   if (!updatedOrder) throw new Error('Order not found');
 }
 
-export async function getMyOrders({ limit = PAGE_SIZE, page }: TOrdersRequest) {
+export async function getMyOrders({ limit = PAGE_SIZE, page }: TAllItemsRequest) {
   const session = await auth();
 
   if (!session) throw new Error('User is not authorized');
@@ -280,7 +280,7 @@ export async function getOrderSummary() {
   };
 }
 
-export async function getAllOrders({ limit = PAGE_SIZE, page }: TOrdersRequest) {
+export async function getAllOrders({ limit = PAGE_SIZE, page }: TAllItemsRequest) {
   const data = await prisma.order.findMany({
     orderBy: { createdAt: 'desc' },
     take: limit,

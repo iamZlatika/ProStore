@@ -11,7 +11,9 @@ import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { hashSync } from 'bcrypt-ts-edge';
 import { prisma } from '@/db/prisma';
 import { formatError } from '../utils';
-import type { TPaymentMethod, TShippingAddress, TUpdateUser } from '@/types';
+import type { TAllItemsRequest, TPaymentMethod, TShippingAddress, TUpdateUser } from '@/types';
+import { PAGE_SIZE } from '../constants';
+import { revalidatePath } from 'next/cache';
 
 export async function signInUserWithCredentials(prevState: unknown, formData: FormData) {
   try {
@@ -137,6 +139,33 @@ export async function updateProfile(user: TUpdateUser) {
       data: { name: user.name },
     });
     return { success: true, message: 'User updated successfully' };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
+export async function getAllUsers({ limit = PAGE_SIZE, page }: TAllItemsRequest) {
+  const data = await prisma.user.findMany({
+    orderBy: { createdAt: 'desc' },
+    take: limit,
+    skip: (page - 1) * limit,
+  });
+
+  const dataCount = await prisma.user.count();
+
+  return {
+    data,
+    totalPages: Math.ceil(dataCount / limit),
+  };
+}
+
+export async function deleteUser(userId: string) {
+  try {
+    await prisma.user.delete({
+      where: { id: userId },
+    });
+    revalidatePath('/admun/users');
+    return { success: true, message: 'User deleted successfully' };
   } catch (error) {
     return { success: false, message: formatError(error) };
   }
