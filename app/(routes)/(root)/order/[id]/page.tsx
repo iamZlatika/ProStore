@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import { getOrderById } from '@/lib/actions/order.actions';
 import { notFound } from 'next/navigation';
-import OrderDetailsTable from './order-details-table';
+
 import type { TShippingAddress } from '@/types';
 import { auth } from '@/auth';
+import OrderDetailsTable from './components/order-details-table';
 
 export const metadata: Metadata = {
   title: 'Order Details',

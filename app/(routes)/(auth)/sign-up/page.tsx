@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { APP_NAME } from '@/lib/constants';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
-import SignUpForm from './sign-up-form';
+import SignUpForm from './components/sign-up-form';
 
 export const metadata: Metadata = {
   title: 'Sign Up',

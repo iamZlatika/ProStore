@@ -18,7 +18,7 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { formatCurrency } from '@/lib/utils';
-import PlaceOrderForm from './place-order-form';
+import PlaceOrderForm from './components/place-order-form';
 
 export const metadata: Metadata = {
   title: 'Place Order',

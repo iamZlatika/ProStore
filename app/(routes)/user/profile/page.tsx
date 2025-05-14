@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { auth } from '@/auth';
-import ProfileForm from './profile-form';
+import ProfileForm from './components/profile-form';
 import { getUserbyId } from '@/lib/actions/user.actions';
 
 export const metadata: Metadata = {

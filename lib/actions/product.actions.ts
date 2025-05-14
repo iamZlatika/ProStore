@@ -16,12 +16,20 @@ export async function getLatestProducts() {
   return convertToPlainObject(data);
 }
 
-// Get single product by slug
 export async function getProductBySlug(slug: string) {
   return await prisma.product.findFirst({
     where: { slug },
   });
 }
+
+export async function getProductById(productId: string) {
+  const data = await prisma.product.findFirst({
+    where: { id: productId },
+  });
+
+  return convertToPlainObject(data);
+}
+
 export async function getAllProducts({
   // query,
   limit = PAGE_SIZE,
