@@ -5,13 +5,20 @@ import {
   signInFormSchema,
   signUpFormSchema,
   paymentMethodSchema,
+  updateUserSchema,
 } from '../validators';
 import { auth, signIn, signOut } from '@/auth';
 import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { hashSync } from 'bcrypt-ts-edge';
 import { prisma } from '@/db/prisma';
 import { formatError } from '../utils';
-import type { TAllItemsRequest, TPaymentMethod, TShippingAddress, TUpdateUser } from '@/types';
+import type {
+  TAllItemsRequest,
+  TPaymentMethod,
+  TShippingAddress,
+  TUpdateUser,
+  TUser,
+} from '@/types';
 import { PAGE_SIZE } from '../constants';
 import { revalidatePath } from 'next/cache';
 
@@ -166,6 +173,29 @@ export async function deleteUser(userId: string) {
     });
     revalidatePath('/admun/users');
     return { success: true, message: 'User deleted successfully' };
+  } catch (error) {
+    return { success: false, message: formatError(error) };
+  }
+}
+
+export async function updateUser(data: TUser) {
+  try {
+    const user = updateUserSchema.parse(data);
+    const userExists = await prisma.user.findFirst({
+      where: { id: user.id },
+    });
+    if (!userExists) throw new Error('User not found');
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        name: user.name,
+        role: user.role,
+      },
+    });
+
+    revalidatePath('/admin/users');
+    return { success: true, message: 'User updated successfully' };
   } catch (error) {
     return { success: false, message: formatError(error) };
   }

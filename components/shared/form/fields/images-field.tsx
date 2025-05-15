@@ -1,3 +1,5 @@
+'use client';
+
 import type { TInsertProduct } from '@/types';
 import type { UseFormReturn } from 'react-hook-form';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';

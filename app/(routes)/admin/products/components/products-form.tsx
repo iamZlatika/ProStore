@@ -5,10 +5,10 @@ import slugify from 'slugify';
 import type { TInsertProduct } from '@/types';
 import { Button } from '@/components/ui/button';
 import { useProductForm } from './useProductForm';
-import BasicField from './fields/basic-field';
-import ImagesField from './fields/images-field';
-import IsFeaturedField from './fields/is-featured-field';
-import TextAreaField from './fields/text-area-field';
+import BasicField from '@/components/shared/form/fields/basic-field';
+import ImagesField from '@/components/shared/form/fields/images-field';
+import IsFeaturedField from '@/components/shared/form/fields/is-featured-field';
+import TextAreaField from '@/components/shared/form/fields/text-area-field';
 
 interface ProductsFormProps {
   type: 'Create' | 'Update';

@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -8,9 +10,15 @@ interface BasicFieldProps<T extends FieldValues> {
   form: UseFormReturn<T>;
   name: Path<T>;
   onGenerate?: () => void;
+  disabled?: boolean;
 }
 
-const BasicField = <T extends FieldValues>({ form, name, onGenerate }: BasicFieldProps<T>) => (
+const BasicField = <T extends FieldValues>({
+  form,
+  name,
+  onGenerate,
+  disabled,
+}: BasicFieldProps<T>) => (
   <FormField
     control={form.control}
     name={name}
@@ -20,7 +28,7 @@ const BasicField = <T extends FieldValues>({ form, name, onGenerate }: BasicFiel
         <FormControl>
           {onGenerate ? (
             <div className="relative">
-              <Input placeholder={`Enter product ${name}`} {...field} />
+              <Input placeholder={`Enter ${name}`} {...field} />
               <Button
                 type="button"
                 className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-1 mt-2"
@@ -30,7 +38,7 @@ const BasicField = <T extends FieldValues>({ form, name, onGenerate }: BasicFiel
               </Button>
             </div>
           ) : (
-            <Input placeholder={`Enter product ${name}`} {...field} />
+            <Input placeholder={`Enter ${name}`} {...field} disabled={disabled} />
           )}
         </FormControl>
         <FormMessage />

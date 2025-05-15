@@ -1,3 +1,5 @@
+'use client';
+
 import { UploadButton } from '@/lib/uploadthing';
 import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';

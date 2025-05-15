@@ -1,3 +1,5 @@
+'use client';
+
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { capitalizeFirstLetter } from '@/lib/utils';

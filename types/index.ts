@@ -9,6 +9,7 @@ import type {
   shippingAddressSchema,
   updateProductSchema,
   updateProfileSchema,
+  updateUserSchema,
 } from '@/lib/validators';
 import type { z } from 'zod';
 
@@ -66,3 +67,5 @@ export type TProductsRequest = {
   page: number;
   category: string;
 };
+
+export type TUser = z.infer<typeof updateUserSchema>;
