@@ -21,6 +21,7 @@ import type {
 } from '@/types';
 import { PAGE_SIZE } from '../constants';
 import { revalidatePath } from 'next/cache';
+import type { Prisma } from '@prisma/client';
 
 export async function signInUserWithCredentials(prevState: unknown, formData: FormData) {
   try {
@@ -151,14 +152,28 @@ export async function updateProfile(user: TUpdateUser) {
   }
 }
 
-export async function getAllUsers({ limit = PAGE_SIZE, page }: TAllItemsRequest) {
+export async function getAllUsers({
+  limit = PAGE_SIZE,
+  page,
+  query,
+}: TAllItemsRequest & { query?: string }) {
+  const where: Prisma.UserWhereInput = query
+    ? {
+        name: {
+          contains: query,
+          mode: 'insensitive' as const,
+        },
+      }
+    : {};
+
   const data = await prisma.user.findMany({
+    where,
     orderBy: { createdAt: 'desc' },
     take: limit,
     skip: (page - 1) * limit,
   });
 
-  const dataCount = await prisma.user.count();
+  const dataCount = await prisma.user.count({ where });
 
   return {
     data,

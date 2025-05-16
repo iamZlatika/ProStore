@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 const AdminOrdersPage = async (props: {
   searchParams: Promise<{ page: string; query: string }>;
 }) => {
-  const { page = '1' } = await props.searchParams;
+  const { page = '1', query: searchText } = await props.searchParams;
 
   const session = await auth();
   if (session?.user.role !== 'admin') {
@@ -31,6 +31,7 @@ const AdminOrdersPage = async (props: {
 
   const orders = await getAllOrders({
     page: Number(page),
+    query: searchText,
   });
 
   return (
@@ -42,6 +43,7 @@ const AdminOrdersPage = async (props: {
             <TableRow>
               <TableHead>ID</TableHead>
               <TableHead>DATE</TableHead>
+              <TableHead>BUYER</TableHead>
               <TableHead>TOTAL</TableHead>
               <TableHead>PAID</TableHead>
               <TableHead>DELIVERED</TableHead>
@@ -53,6 +55,7 @@ const AdminOrdersPage = async (props: {
               <TableRow key={order.id}>
                 <TableCell>{formatId(order.id)}</TableCell>
                 <TableCell>{formatDateTime(order.createdAt).dateTime}</TableCell>
+                <TableCell>{order.user.name}</TableCell>
                 <TableCell>{formatCurrency(order.totalPrice)}</TableCell>
                 <TableCell>
                   {order.isPaid && order.paidAt
