@@ -56,11 +56,14 @@ export type TSalesData = {
   totalSales: number;
 };
 
-export type TAllItemsRequest = {
-  query: string;
-  limit?: number;
-  page: number;
-  // category: string;
-};
-
 export type TUser = z.infer<typeof updateUserSchema>;
+
+export type TSearchParams = {
+  query?: string;
+  category?: string;
+  price?: string;
+  rating?: string;
+  sort?: string;
+  page: number;
+  limit?: number;
+};
