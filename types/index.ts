@@ -67,3 +67,8 @@ export type TSearchParams = {
   page: number;
   limit?: number;
 };
+
+export type TCategory = {
+  category: string;
+  _count: { category: number };
+};

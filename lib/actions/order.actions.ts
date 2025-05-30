@@ -7,7 +7,7 @@ import { getMyCart } from './cart.actions';
 import { getUserbyId } from './user.actions';
 import { insertOrderSchema } from '../validators';
 import { prisma } from '@/db/prisma';
-import type { TCartItem, TAllItemsRequest, TPaymentResult, TSalesData } from '@/types';
+import type { TCartItem, TPaymentResult, TSalesData, TSearchParams } from '@/types';
 import { paypal } from '../paypal';
 import { revalidatePath } from 'next/cache';
 import { PAGE_SIZE } from '../constants';
@@ -223,7 +223,7 @@ async function updateOrderToPaid({
   if (!updatedOrder) throw new Error('Order not found');
 }
 
-export async function getMyOrders({ limit = PAGE_SIZE, page }: TAllItemsRequest) {
+export async function getMyOrders({ limit = PAGE_SIZE, page }: TSearchParams) {
   const session = await auth();
 
   if (!session) throw new Error('User is not authorized');
@@ -280,7 +280,7 @@ export async function getOrderSummary() {
   };
 }
 
-export async function getAllOrders({ limit = PAGE_SIZE, page, query }: TAllItemsRequest) {
+export async function getAllOrders({ limit = PAGE_SIZE, page, query }: TSearchParams) {
   const where: Prisma.OrderWhereInput = query
     ? {
         user: {

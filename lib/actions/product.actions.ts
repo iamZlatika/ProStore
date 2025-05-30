@@ -160,7 +160,12 @@ export async function getAllCategories() {
     by: ['category'],
     _count: true,
   });
-  return data;
+  return data.map((item) => ({
+    category: item.category,
+    _count: {
+      category: Number(item._count),
+    },
+  }));
 }
 
 export async function getFeaturedProducts() {

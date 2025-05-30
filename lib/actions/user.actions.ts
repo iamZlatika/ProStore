@@ -12,13 +12,7 @@ import { isRedirectError } from 'next/dist/client/components/redirect-error';
 import { hashSync } from 'bcrypt-ts-edge';
 import { prisma } from '@/db/prisma';
 import { formatError } from '../utils';
-import type {
-  TAllItemsRequest,
-  TPaymentMethod,
-  TShippingAddress,
-  TUpdateUser,
-  TUser,
-} from '@/types';
+import type { TSearchParams, TPaymentMethod, TShippingAddress, TUpdateUser, TUser } from '@/types';
 import { PAGE_SIZE } from '../constants';
 import { revalidatePath } from 'next/cache';
 import type { Prisma } from '@prisma/client';
@@ -156,7 +150,7 @@ export async function getAllUsers({
   limit = PAGE_SIZE,
   page,
   query,
-}: TAllItemsRequest & { query?: string }) {
+}: TSearchParams & { query?: string }) {
   const where: Prisma.UserWhereInput = query
     ? {
         name: {
